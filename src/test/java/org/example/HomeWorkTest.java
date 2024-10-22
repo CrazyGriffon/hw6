@@ -2,6 +2,7 @@ package org.example;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.GenericDeclaration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,35 +17,33 @@ class HomeWorkTest {
     HomeWork homeWork = new HomeWork();
 
     @Test
-    void managerFabric() {
-    }
-
-    @Test
     void check() {
-        List<Integer> expectedQueue = generateQueue(1, 4);
-        List<String> pairs = generatePairs(expectedQueue);
-        assertEquals(expectedQueue, homeWork.check(pairs));
+        MorseTranslator morseTranslator = homeWork.morseTranslator();
+        String input = "hello world";
+        String encoded = ".... . .-.. .-.. --- / .-- --- .-. .-.. -..";
+        assertEquals(encoded, morseTranslator.encode(input));
+        assertEquals(input, morseTranslator.decode(encoded));
+
+        String input1 = "a picture is worth a thousand words";
+        assertEquals(input1.toLowerCase(),
+                morseTranslator.decode(
+                        morseTranslator.encode(input1)
+                )
+        );
+
+        String input2 = "All good things must come to an end";
+        assertEquals(input2.toLowerCase(),
+                morseTranslator.decode(
+                        morseTranslator.encode(input2)
+                )
+        );
+
+        String input3 = "Keep your friends close 8905454 and your enemies closer 12 45 8 90";
+
+        assertEquals(input3.toLowerCase(),
+                morseTranslator.decode(
+                        morseTranslator.encode(input3)
+                )
+        );
     }
-
-    private List<String> generatePairs(List<Integer> expectedQueue) {
-        List<String> pairs = new ArrayList<>();
-        Function<Integer, Integer> map = (x) -> (x < 0 || x >= expectedQueue.size()) ? 0 : expectedQueue.get(x);
-
-        for (int i = 0;
-             i < expectedQueue.size(); i++) {
-            pairs.add(String.format("%d:%d", map.apply(i - 1), map.apply(i + 1)));
-        }
-        Collections.shuffle(pairs);
-        return pairs;
-    }
-
-    private List<Integer> generateQueue(int seed, int length) {
-        return new Random(seed)
-                .ints(1, length * 100)
-                .limit(length)
-                .boxed()
-                .collect(Collectors.toList());
-    }
-
-
 }
